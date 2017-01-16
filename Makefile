@@ -21,15 +21,14 @@ ifndef PDIR # {
 GEN_IMAGES= eagle.app.v6.out
 GEN_BINS= eagle.app.v6.bin
 SPECIAL_MKTARGETS=$(APP_MKTARGETS)
-SUBDIRS=    \
-	user    \
-	sample_lib
+SUBDIRS=user
 
 endif # } PDIR
 
 LDDIR = $(SDK_PATH)/ld
 
-CCFLAGS += -Os
+#CCFLAGS += -Os -std=gnu99
+CCFLAGS += -w -Os -g -std=gnu99 -Wpointer-arith -Wno-implicit-function-declaration -Wundef -pipe -D__ets__ -DICACHE_FLASH -fno-inline-functions -ffunction-sections -nostdlib -mlongcalls -mtext-section-literals -falign-functions=4 -fdata-sections
 
 TARGET_LDFLAGS =		\
 	-nostdlib		\
@@ -46,8 +45,7 @@ ifeq ($(FLAVOR),release)
 endif
 
 COMPONENTS_eagle.app.v6 = \
-	user/libuser.a  \
-	sample_lib/libsample.a
+	user/libuser.a
 
 LINKFLAGS_eagle.app.v6 = \
 	-L$(SDK_PATH)/lib        \
@@ -77,10 +75,18 @@ LINKFLAGS_eagle.app.v6 = \
 	-lpwm	\
 	-lsmartconfig	\
 	-lspiffs	\
-	-lssl	\
+	-lopenssl               \
+	-lmbedtls               \
 	-lwpa	\
 	-lwps		\
 	$(DEP_LIBS_eagle.app.v6)					\
+	-L$(AZURE_IOT_SDK_C)/cmake/iotsdk_esp8266/c-utility \
+	-laziotsharedutil \
+	-L$(AZURE_IOT_SDK_C)/cmake/iotsdk_esp8266/umqtt \
+	-lumqtt \
+	-L$(AZURE_IOT_SDK_C)/cmake/iotsdk_esp8266/iothub_client \
+	-liothub_client \
+	-liothub_client_mqtt_transport \
 	-Wl,--end-group
 
 DEPENDS_eagle.app.v6 = \
@@ -101,7 +107,8 @@ DEPENDS_eagle.app.v6 = \
 #	-DTXRX_TXBUF_DEBUG
 #	-DTXRX_RXBUF_DEBUG
 #	-DWLAN_CONFIG_CCX
-CONFIGURATION_DEFINES =	-DICACHE_FLASH
+#CONFIGURATION_DEFINES =	-DICACHE_FLASH
+CONFIGURATION_DEFINES =	-DICACHE_FLASH -D__STDC_NO_ATOMICS__=1 -DESP8266_RTOS -D__STDC_VERSION__=201112L -DFREERTOS_ARCH_ESP8266
 
 DEFINES +=				\
 	$(UNIVERSAL_TARGET_DEFINES)	\

@@ -15,6 +15,14 @@ ifndef PDIR
 GEN_LIBS = libuser.a
 endif
 
+LDFLAGS += \
+	-L$(AZURE_IOT_SDK_C)/cmake/iotsdk_esp8266/c-utility \
+	-laziotsharedutil \
+	-L$(AZURE_IOT_SDK_C)/cmake/iotsdk_esp8266/umqtt \
+	-lumqtt \
+	-L$(AZURE_IOT_SDK_C)/cmake/iotsdk_esp8266/iothub_client \
+	-liothub_client \
+	-liothub_client_mqtt_transport
 
 #############################################################
 # Configuration i.e. compile options etc.
@@ -39,6 +47,10 @@ endif
 
 INCLUDES := $(INCLUDES) -I $(PDIR)include
 INCLUDES += -I ./
+INCLUDES += -I $(AZURE_IOT_SDK_C)/c-utility/inc
+INCLUDES += -I $(AZURE_IOT_SDK_C)/azure-umqtt-c/inc
+INCLUDES += -I $(AZURE_IOT_SDK_C)/iothub_client/inc
+INCLUDES += -I $(SDK_PATH)/include/espressif/esp8266
+INCLUDES += -I $(SDK_PATH)/include
 PDIR := ../$(PDIR)
 sinclude $(PDIR)Makefile
-

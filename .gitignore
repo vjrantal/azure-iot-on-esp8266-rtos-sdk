@@ -1,2 +1,5 @@
 **/.output/
 bin/
+.vscode/
+ESP8266_RTOS_SDK/
+azure-iot-sdk-c/
